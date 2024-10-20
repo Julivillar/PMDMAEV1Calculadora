@@ -49,9 +49,8 @@ export default function App() {
 
   const [screen, setScreen] = useState('0');
   const [firstNumber, setFirstNumber] = useState('');
-  const [pendingOp, setPendingOp] = useState('');
-
   const [lastNumber, setLastNumber] = useState();
+  const [pendingOp, setPendingOp] = useState('');
 
   const handlePressBtnNumber = (btn) => {
     if (btn === '.') {
@@ -80,8 +79,9 @@ export default function App() {
       setScreen('0');
     } else {
       if (result === '.') return;
-      result = result.toString();
-      result = result.substring(0, 11);
+
+      result = result?.toString();
+      result = result?.substring(0, 11);
       setScreen(result);
     }
   };
@@ -120,6 +120,7 @@ export default function App() {
         break;
       case 'π':
         result = Math.PI;
+        if (firstNumber !== '') setFirstNumber(Math.PI);
         break;
       case 'rad':
         result = screenContent * (Math.PI / 180);
@@ -145,20 +146,20 @@ export default function App() {
         setFirstNumber(screenContent);
         setPendingOp(btn);
         return 'clear';
-        break;
       case '=':
         if (lastNumber == undefined || pendingOp == undefined) return '';
+
         if (pendingOp === '+') {
-          return Number(firstNumber) + Number(lastNumber);
+          return parseFloat(firstNumber) + parseFloat(lastNumber);
         }
         if (pendingOp === '-') {
-          return firstNumber - lastNumber;
+          return parseFloat(firstNumber) - parseFloat(lastNumber);
         }
-        if (pendingOp === '*') {
-          return firstNumber * lastNumber;
+        if (pendingOp === 'x') {
+          return parseFloat(firstNumber) * parseFloat(lastNumber);
         }
         if ((pendingOp === '/') & (lastNumber != 0)) {
-          return firstNumber / lastNumber;
+          return parseFloat(firstNumber) / parseFloat(lastNumber);
         }
         break;
 
@@ -178,11 +179,7 @@ export default function App() {
 
   return (
     <View
-      style={{
-        justifyContent: 'center',
-        alignSelf: 'center',
-        marginVertical: 80,
-      }}>
+      style={styles.parentView}>
       <Text style={{ fontSize: 45, fontWeight: 'bold' }}>Calculadora</Text>
 
       <View style={{ marginTop: 5 }}>
@@ -221,6 +218,11 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  parentView: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginVertical: 80,
+  },
   numberButtons: {
     borderRadius: 8,
     justifyContent: 'center',
